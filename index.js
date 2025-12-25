@@ -1,35 +1,33 @@
 const {
-  Client,
-  GatewayIntentBits,
-  Events,
+    Client,
+    GatewayIntentBits,
+    Events,
 } = require("discord.js");
 require("dotenv").config();
 
 const client = new Client({
-  intents: [
-    GatewayIntentBits.Guilds,
-    GatewayIntentBits.GuildMembers,
-    GatewayIntentBits.GuildMessages,
-    GatewayIntentBits.MessageContent,
-  ],
+    intents: [
+        GatewayIntentBits.Guilds,
+        GatewayIntentBits.GuildMessages,
+        GatewayIntentBits.MessageContent,
+    ],
 });
 
 
 client.once(Events.ClientReady, () => {
-  console.log(`Logged in as ${client.user.tag}`);
+    console.log(`Logged in as ${client.user.tag}`);
 });
 
-client.on(Events.GuildMemberUpdate, (oldMember, newMember) => {
-  console.log(`Member updated: ${newMember.user.tag}`);
-  const addedRoles = newMember.roles.cache.filter(r => !oldMember.roles.cache.has(r.id));
-  addedRoles.forEach(role => {
-    console.log(`Role added: ${role.id} to member ${newMember.user.tag}`);
-    const roleInfo = roles[role.id];
-    if (roleInfo) {
-      console.log(`Welcoming new ${roleInfo.male?"brother":"sister"}: ${newMember.user.tag} assigned role ${role.id}`);
-      newMember.guild.channels.cache.get(roleInfo.channelID)?.send(`Give salam to our new ${roleInfo.male?"brother":"sister"} <@${newMember.id}>!`);
+const chats = [
+    "1413354600223739984", // male chat
+    "1452705566525886666" // female chat
+]
+
+client.on(Events.MessageCreate, (message) => {
+    if(message.author.bot || !chats.includes(message.channelId)) return;
+    if (message.content.toLowerCase().includes('media')) {
+        message.reply("Yo bro to have media you gotta invite 1, chop chop akhi");
     }
-  });
 });
 
 client.login(process.env.DISCORD_BOT_TOKEN);
